@@ -2,3 +2,10 @@
 # Ignore everything in this directory
 *
 #Except for this file 
+
+!*.py
+!*.sh
+!*.md
+!*.yml
+!*.yaml
+!*.json
