@@ -35,6 +35,7 @@ def int_view_float(h):
 
 def get_argparser():
     parser = argparse.ArgumentParser(description='DNN models')
+    parser.add_argument('-t','--type', required=True, type=str, help='golden')
     parser.add_argument('-n','--model_name', required=True, type=str, help='golden')
     parser.add_argument('-ln','--layer_number', required=True, type=int, help='golden')
     parser.add_argument('-bs','--batch_size', required=True, type=int, help='golden')
@@ -47,7 +48,7 @@ def main(args):
     verbose = args.verbose
     #current_path = os.getcwd()
     based_path = os.path.dirname(__file__)
-    current_path = os.path.join(based_path, f"conv2d/{args.model_name}-ln{args.layer_number}")
+    current_path = os.path.join(based_path, f"{args.type}/{args.model_name}-ln{args.layer_number}")
    
 
     dataset_file = os.path.join(

@@ -41,6 +41,29 @@ APP_ARGS=$*
 #source ~/miniconda3/etc/profile.d/conda.sh
 #conda activate Pytorch_nvbitPERfi
 #if [ -f ${APP_DIR}/Output_layer.h5 ]; then
+
+for ((idx=0; idx<${#NEW_VAR[@]}; ++idx))
+do  
+    case "${NEW_VAR[idx]}" in
+
+    "-t")
+        TYPE="${NEW_VAR[idx+1]}"
+        ;;
+
+    "-n")
+        NAME="${NEW_VAR[idx+1]}"
+        ;;
+
+    "-ln")
+        NUM="${NEW_VAR[idx+1]}"
+        ;;
+
+    *)
+    ;;
+    esac
+    FILES_DIR=${APP_DIR}/${TYPE}/${NAME}-ln${NUM}
+
+
 touch diff.log
 #fi
 
@@ -56,7 +79,7 @@ diff stderr.txt golden_stderr.txt > stderr_diff.log
 # Application specific output: The following check will be performed only if at least one of diff.log, stdout_diff.log, and stderr_diff.log is different
 
 #cp diff.log special_check.txt 
-if cmp -s ${APP_DIR}/Golden_Output_layer.h5 ${APP_DIR}/Output_layer.h5 ; then
+if cmp -s ${FILES_DIR}/Golden_Output_layer.h5 ${FILES_DIR}/Output_layer.h5 ; then
     touch special_check.txt
 else
     python3 ${APP_DIR}/sdc_check.py ${APP_ARGS} > special_check.txt 
