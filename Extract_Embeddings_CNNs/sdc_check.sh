@@ -38,6 +38,7 @@
 # Example: diff output.txt ${APP_DIR}/golden_output.txt > diff.log
 
 APP_ARGS=$*
+NEW_VAR=("$@")
 #source ~/miniconda3/etc/profile.d/conda.sh
 #conda activate Pytorch_nvbitPERfi
 #if [ -f ${APP_DIR}/Output_layer.h5 ]; then
