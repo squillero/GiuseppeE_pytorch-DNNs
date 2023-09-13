@@ -40,6 +40,7 @@ def get_argparser():
     parser.add_argument('-ln','--layer_number', required=True, type=int, help='golden')
     parser.add_argument('-bs','--batch_size', required=True, type=int, help='golden')
     parser.add_argument('-v','--verbose', required=False, type=int, help='golden')
+    parser.add_argument('-trt','--run_trt', required=False, action='store_true', help='golden')
     return parser
 
 def main(args):

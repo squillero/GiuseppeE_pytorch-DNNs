@@ -3,133 +3,133 @@
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n AlexNet -ln 0 -bs 1 -trt -sz 1 64 55 55 "
     ],
     "conv2d-AlexNet-ln1": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n AlexNet -ln 1 -bs 1 -trt -sz 1 192 27 27 "
     ],
     "conv2d-AlexNet-ln2": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n AlexNet -ln 2 -bs 1 -trt -sz 1 384 13 13 "
     ],
     "conv2d-AlexNet-ln3": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n AlexNet -ln 3 -bs 1 -trt -sz 1 256 13 13 "
     ],
     "conv2d-AlexNet-ln4": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n AlexNet -ln 4 -bs 1 -trt -sz 1 256 13 13 "
     ],
     "conv2d-LeNet-ln0": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n LeNet -ln 0 -bs 1 -trt -sz 1 6 28 28 "
     ],
     "conv2d-LeNet-ln1": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n LeNet -ln 1 -bs 1 -trt -sz 1 16 10 10 "
     ],
     "conv2d-MobileNetv3-ln0": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n MobileNetv3 -ln 0 -bs 1 -trt -sz 1 16 112 112 "
     ],
     "conv2d-MobileNetv3-ln1": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n MobileNetv3 -ln 1 -bs 1 -trt -sz 1 16 112 112 "
     ],
     "conv2d-MobileNetv3-ln2": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n MobileNetv3 -ln 2 -bs 1 -trt -sz 1 16 112 112 "
     ],
     "conv2d-MobileNetv3-ln3": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n MobileNetv3 -ln 3 -bs 1 -trt -sz 1 64 112 112 "
     ],
     "conv2d-MobileNetv3-ln4": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n MobileNetv3 -ln 4 -bs 1 -trt -sz 1 64 56 56 "
     ],
     "conv2d-MobileNetv3-ln5": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n MobileNetv3 -ln 5 -bs 1 -trt -sz 1 24 56 56 "
     ],
     "conv2d-MobileNetv3-ln6": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n MobileNetv3 -ln 6 -bs 1 -trt -sz 1 72 56 56 "
     ],
     "conv2d-ResNet50-ln0": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n ResNet50 -ln 0 -bs 1 -trt -sz 1 64 112 112 "
     ],
     "conv2d-ResNet50-ln1": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n ResNet50 -ln 1 -bs 1 -trt -sz 1 64 56 56 "
     ],
     "conv2d-ResNet50-ln2": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n ResNet50 -ln 2 -bs 1 -trt -sz 1 64 56 56 "
     ],
     "conv2d-ResNet50-ln3": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n ResNet50 -ln 3 -bs 1 -trt -sz 1 256 56 56 "
     ],
     "conv2d-ResNet50-ln4": [
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
         "Run_Layer.py",
         "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/Extract_Embeddings_CNNs",
-        10,
+        30,
         "-t conv2d -n ResNet50 -ln 4 -bs 1 -trt -sz 1 256 56 56 "
     ]
 }

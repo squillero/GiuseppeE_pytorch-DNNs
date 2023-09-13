@@ -65,6 +65,7 @@ do
     FILES_DIR=${APP_DIR}/${TYPE}/${NAME}-ln${NUM}
 done
 
+
 touch diff.log
 #fi
 
