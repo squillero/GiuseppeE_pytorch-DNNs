@@ -12,13 +12,14 @@ import torchvision.transforms as transforms
 import time
 import os, sys
 import argparse
-import nvbitfi_DNN as nvbitDNN
+import nvbitfi_DNN_TRT as nvbitDNN
 
 
 
 def get_argparser():
     parser = argparse.ArgumentParser(description='DNN models')
-    parser.add_argument('--golden', required=False, help='golden')
+    parser.add_argument('-g','--golden', required=False, help='golden')
+    parser.add_argument('-lt','--layer', required=False, help='golden')
     parser.add_argument('-ln','--layer_number', required=False, type=int, default=0, help='golden')
     parser.add_argument('-bs','--batch_size', required=False, type=int, default=1, help='golden')
     return parser
@@ -96,7 +97,7 @@ def main(args):
         print(model)
 
         Embeddings = nvbitDNN.extract_embeddings_nvbit(
-            model=model, lyr_type=[nn.Conv2d], lyr_num=args.layer_number, batch_size=batch_size
+            model=model, lyr_type=[nn.Conv2d], lyr_num=args.layer_number, batch_size=batch_size, path_dir=f"conv2d/AlexNet-ln{args.layer_number}"
         )
 
         t = time.time()

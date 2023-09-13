@@ -35,6 +35,7 @@ def int_view_float(h):
 
 def get_argparser():
     parser = argparse.ArgumentParser(description='DNN models')
+    parser.add_argument('-n','--model_name', required=True, type=str, help='golden')
     parser.add_argument('-ln','--layer_number', required=True, type=int, help='golden')
     parser.add_argument('-bs','--batch_size', required=True, type=int, help='golden')
     parser.add_argument('-v','--verbose', required=False, type=int, help='golden')
@@ -45,7 +46,9 @@ def main(args):
     batch_size = args.batch_size
     verbose = args.verbose
     #current_path = os.getcwd()
-    current_path = os.path.dirname(__file__)
+    based_path = os.path.dirname(__file__)
+    current_path = os.path.join(based_path, f"conv2d/{args.model_name}-ln{args.layer_number}")
+   
 
     dataset_file = os.path.join(
         current_path,
@@ -102,7 +105,7 @@ def main(args):
                 sdc_line = f"{batch}: {tuple(k)}: {int_view_original_val:08X}; {int_view_faulty_val:08X}; {xor_result:08X}"
                 print(sdc_line)
 
-        os.remove(dataset_file)
+        #os.remove(dataset_file)
 
 
 if __name__=="__main__":

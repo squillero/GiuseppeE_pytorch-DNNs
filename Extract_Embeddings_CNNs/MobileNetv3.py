@@ -12,7 +12,7 @@ import torchvision.transforms as transforms
 import time
 import os, sys
 import argparse
-import nvbitfi_DNN as nvbitDNN
+import nvbitfi_DNN_TRT as nvbitDNN
 
 
 
@@ -96,7 +96,7 @@ def main(args):
         print(model)
 
         Embeddings = nvbitDNN.extract_embeddings_nvbit(
-            model=model, lyr_type=[nn.Conv2d], lyr_num=args.layer_number, batch_size=batch_size
+            model=model, lyr_type=[nn.Conv2d], lyr_num=args.layer_number, batch_size=batch_size, path_dir=f"conv2d/MobileNetv3-ln{args.layer_number}"
         )
 
         t = time.time()

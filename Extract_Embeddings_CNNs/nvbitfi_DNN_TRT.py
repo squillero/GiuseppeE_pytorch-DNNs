@@ -22,7 +22,10 @@ torch.backends.cudnn.allow_tf32 = False
 # print(self.Input_dataset[0:128].shape)
 
 class extract_embeddings_nvbit:
-    def __init__(self, model, lyr_type=[nn.Conv2d], lyr_num=0, batch_size=1) -> None:
+    def __init__(self, model, lyr_type=[nn.Conv2d], lyr_num=0, batch_size=1, path_dir="") -> None:
+        current_path = os.path.dirname(__file__)
+        self.path_dir = os.path.join(current_path,path_dir)
+        os.system(f"mkdir -p {self.path_dir}")
         self.DNN = model
         self.batch_size = batch_size
         self.layer_id = 0
@@ -102,7 +105,6 @@ class extract_embeddings_nvbit:
             print((self.layer_embedding_list_input[layer_id][0].shape))
             print((self.layer_embedding_list_output[layer_id][0].shape))
 
-            current_path = os.path.dirname(__file__)
             embeddings_input = (
                 torch.cat(self.layer_embedding_list_input[layer_id]).cpu().numpy()
             )
@@ -114,7 +116,7 @@ class extract_embeddings_nvbit:
             DNN_Outputs = torch.cat(self.DNN_outputs).cpu().numpy()
 
             log_path_file = os.path.join(
-                current_path, f"embeddings.h5"
+                self.path_dir , f"embeddings.h5"
             )
 
             with h5py.File(log_path_file, "w") as hf:
@@ -134,7 +136,7 @@ class extract_embeddings_nvbit:
                 # hf.create_dataset('batch_size', data=self.batch_size, compression="gzip")
             
             layer_inputs_path_file = os.path.join(
-                current_path, f"inputs_layer.h5"
+                self.path_dir, f"inputs_layer.h5"
             )
 
             with h5py.File(layer_inputs_path_file, "w") as hf:
@@ -143,7 +145,7 @@ class extract_embeddings_nvbit:
                 )
             
             layer_inputs_path_file = os.path.join(
-                current_path, f"Golden_Output_layer.h5"
+                self.path_dir, f"Golden_Output_layer.h5"
             )
 
             with h5py.File(layer_inputs_path_file, "w") as hf:
@@ -151,23 +153,24 @@ class extract_embeddings_nvbit:
                     "layer_output", data=embeddings_output, compression="gzip"
                 )
 
-            self._save_target_layer(self.layer_model, filename="target_layer.pth.tar")
+            self._save_target_layer(self.layer_model, checkpoint=self.path_dir, filename="target_layer.pth.tar")
 
 
 class load_embeddings:
-    def __init__(self, layer_number, batch_size=1) -> None:
+    def __init__(self, path_dir,layer_number, batch_size=1) -> None:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.batch_size = batch_size
         self.layer_results = []
-        self.layer_number = layer_number
+        self.layer_number = layer_number        
         current_path = os.path.dirname(__file__)
-        model_file = os.path.join(current_path, "checkpoint", "target_layer.pth.tar")
+        self.path_dir = os.path.join(current_path,path_dir)
+        model_file = os.path.join(self.path_dir, "target_layer.pth.tar")
         # dataset_file = os.path.join(
         #     current_path,
         #     f"embeddings_batch_size_{self.batch_size}_layer_id_{self.layer_number}.h5",
         # )
         dataset_file = os.path.join(
-            current_path,
+            self.path_dir,
             f"inputs_layer.h5",
         )
         #self.layer_model = torch.load(model_file, map_location=torch.device("cpu"))
@@ -232,9 +235,8 @@ class load_embeddings:
                 # break
         embeddings_outputs = torch.cat(self.layer_results).numpy()
 
-        current_path = os.path.dirname(__file__)
         log_path_file = os.path.join(
-            current_path,
+            self.path_dir,
             f"Output_layer.h5",
         )
 
@@ -251,13 +253,15 @@ class load_embeddings:
         ]
         img_tensor = torch.from_numpy(img)
         img_tensor = img_tensor.to(self.device)
-        torch.onnx.export(self.layer_model, img_tensor, self.onnx_model_name, verbose=False)
+        path_onnx = os.path.join(self.path_dir,self.onnx_model_name)
+        path_rtr = os.path.join(self.path_dir,self.TRT_model_name)
+        torch.onnx.export(self.layer_model, img_tensor, path_onnx, verbose=False)
         USE_FP16 = False
         target_dtype = np.float16 if USE_FP16 else np.float32
         if USE_FP16:
-            cmd=f"/usr/src/tensorrt/bin/trtexec --onnx={self.onnx_model_name} --saveEngine={self.TRT_model_name} --explicitBatch --inputIOFormats=fp16:chw --outputIOFormats=fp16:chw --fp16 "
+            cmd=f"/usr/src/tensorrt/bin/trtexec --onnx={path_onnx} --saveEngine={path_rtr} --explicitBatch --inputIOFormats=fp16:chw --outputIOFormats=fp16:chw --fp16 "
         else:
-            cmd=f"/usr/src/tensorrt/bin/trtexec --onnx={self.onnx_model_name} --saveEngine={self.TRT_model_name} --explicitBatch "
+            cmd=f"/usr/src/tensorrt/bin/trtexec --onnx={path_onnx} --saveEngine={path_rtr} --explicitBatch --noTF32"
         
         msg=os.system(cmd)
         print(cmd)
@@ -270,7 +274,7 @@ class load_embeddings:
         self.target_dtype = np.float32
         current_path = os.path.dirname(__file__)
         
-        with open(os.path.join(current_path, self.TRT_model_name), "rb") as f:
+        with open(os.path.join(self.path_dir,self.TRT_model_name), "rb") as f:
             runtime = trt.Runtime(trt.Logger(trt.Logger.WARNING)) 
             engine = runtime.deserialize_cuda_engine(f.read())
             context = engine.create_execution_context()
@@ -325,9 +329,8 @@ class load_embeddings:
 
             if DEBUG: print(embeddings_outputs.shape)
 
-            current_path = os.path.dirname(__file__)
             log_path_file = os.path.join(
-                current_path,
+                self.path_dir,
                 f"Output_layer.h5",
             )
 
@@ -338,9 +341,10 @@ class load_embeddings:
 
 
 class TRT_load_embeddings:
-    def __init__(self, layer_number, batch_size=1, layer_output_shape=(1,)) -> None:
+    def __init__(self, path_dir, layer_number, batch_size=1, layer_output_shape=(1,)) -> None:
         self.target_dtype = np.float32
-        
+        current_path = os.path.dirname(__file__)
+        self.path_dir = os.path.join(current_path,path_dir)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.batch_size = batch_size
         self.layer_results = []
@@ -349,13 +353,12 @@ class TRT_load_embeddings:
         self.TRT_model_name = "Layer_pytorch.rtr"
         self.TRT_output_shape = layer_output_shape
 
-        current_path = os.path.dirname(__file__)
         # dataset_file = os.path.join(
         #     current_path,
         #     f"embeddings_batch_size_{self.batch_size}_layer_id_{self.layer_number}.h5",
         # )
         dataset_file = os.path.join(
-            current_path,
+            self.path_dir,
             f"inputs_layer.h5",
         )
         with h5py.File(dataset_file, "r") as hf:
@@ -364,7 +367,7 @@ class TRT_load_embeddings:
             # self.batch_size=np.array(hf['batch_size'])
             
         #self.layer_model = torch.load(model_file, map_location=torch.device("cpu"))
-        with open(os.path.join(current_path, self.TRT_model_name), "rb") as f:
+        with open(os.path.join(self.path_dir, self.TRT_model_name), "rb") as f:
             self.runtime = trt.Runtime(trt.Logger(trt.Logger.WARNING)) 
             self.engine = self.runtime.deserialize_cuda_engine(f.read())
             self.context = self.engine.create_execution_context()
@@ -415,9 +418,8 @@ class TRT_load_embeddings:
 
         if DEBUG: print(embeddings_outputs.shape)
 
-        current_path = os.path.dirname(__file__)
         log_path_file = os.path.join(
-            current_path,
+            self.path_dir,
             f"Output_layer.h5",
         )
 

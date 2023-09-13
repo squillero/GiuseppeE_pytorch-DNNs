@@ -11,7 +11,7 @@ import torchvision.transforms as transforms
 import time
 import os, sys
 import argparse
-import nvbitfi_DNN as nvbitDNN
+import nvbitfi_DNN_TRT as nvbitDNN
 
 
 
@@ -140,7 +140,7 @@ def main(args):
         print(model)
 
         Embeddings = nvbitDNN.extract_embeddings_nvbit(
-            model=model, lyr_type=[nn.Conv2d], lyr_num=args.layer_number, batch_size=batch_size
+            model=model, lyr_type=[nn.Conv2d], lyr_num=args.layer_number, batch_size=batch_size, path_dir=f"conv2d/LeNet-ln{args.layer_number}"
         )
 
         t = time.time()
@@ -163,7 +163,7 @@ def main(args):
                     correct += (indices[i][0] == labels[i].item()).sum().item()
                 total += labels.size(0)
                 # break
-                if batch*batch_size+batch_size>=100:
+                if batch*batch_size+batch_size>=32:
                     break
             elapsed = time.time() - t
             print(
