@@ -65,7 +65,7 @@ def main(args):
     # device = 'cpu'
     # Loading the dataset and preprocessing
     train_dataset = torchvision.datasets.ImageFolder(
-        root="~/dataset/ilsvrc2012/train",
+        root="~/dataset/ilsvrc2012/val",
         transform=transform
     )
 
