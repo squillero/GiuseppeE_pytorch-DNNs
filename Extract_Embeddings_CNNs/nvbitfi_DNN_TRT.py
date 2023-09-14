@@ -1,4 +1,5 @@
 import os, sys
+import subprocess
 import numpy as np
 import copy
 import torch
@@ -256,15 +257,14 @@ class load_embeddings:
         path_onnx = os.path.join(self.path_dir,self.onnx_model_name)
         path_rtr = os.path.join(self.path_dir,self.TRT_model_name)
         torch.onnx.export(self.layer_model, img_tensor, path_onnx, verbose=False)
-        USE_FP16 = False
-        target_dtype = np.float16 if USE_FP16 else np.float32
-        if USE_FP16:
-            cmd=f"/usr/src/tensorrt/bin/trtexec --onnx={path_onnx} --saveEngine={path_rtr} --explicitBatch --inputIOFormats=fp16:chw --outputIOFormats=fp16:chw --fp16 "
-        else:
-            cmd=f"/usr/src/tensorrt/bin/trtexec --onnx={path_onnx} --saveEngine={path_rtr} --explicitBatch --noTF32"
+        #USE_FP16 = False
+        #target_dtype = np.float16 if USE_FP16 else np.float32
+        #if USE_FP16:
+        #    cmd=f"/usr/src/tensorrt/bin/trtexec --onnx={path_onnx} --saveEngine={path_rtr} --explicitBatch --inputIOFormats=fp16:chw --outputIOFormats=fp16:chw --fp16 "
+        #else:
+        #    cmd=f"/usr/src/tensorrt/bin/trtexec --onnx={path_onnx} --saveEngine={path_rtr} --explicitBatch --noTF32"
         
-        msg=os.system(cmd)
-        print(cmd)
+            
 
 
     def TRT_layer_inference(self):
