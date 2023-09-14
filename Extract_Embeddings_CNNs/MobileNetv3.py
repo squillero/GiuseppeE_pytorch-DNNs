@@ -21,6 +21,7 @@ def get_argparser():
     parser.add_argument('--golden', required=False, help='golden')
     parser.add_argument('-ln','--layer_number', required=False, type=int, default=0, help='golden')
     parser.add_argument('-bs','--batch_size', required=False, type=int, default=1, help='golden')
+    parser.add_argument('-w','--workers', required=False, type=int, default=2, help='golden')
     return parser
 
 
@@ -74,11 +75,11 @@ def main(args):
     )
 
     train_loader = torch.utils.data.DataLoader(
-        dataset=train_dataset, batch_size=batch_size, shuffle=True, num_workers=8
+        dataset=train_dataset, batch_size=batch_size, shuffle=True, num_workers=args.workers
     )
 
     test_loader = torch.utils.data.DataLoader(
-        dataset=test_dataset, batch_size=batch_size, shuffle=False, num_workers=8
+        dataset=test_dataset, batch_size=batch_size, shuffle=False, num_workers=args.workers
     )
     print(args.golden)
 

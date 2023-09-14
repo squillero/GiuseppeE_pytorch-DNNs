@@ -20,6 +20,7 @@ def get_argparser():
     parser.add_argument('--golden', required=False, help='golden')
     parser.add_argument('-ln','--layer_number', required=False, type=int, default=0, help='golden')
     parser.add_argument('-bs','--batch_size', required=False, type=int, default=1, help='golden')
+    parser.add_argument('-w','--workers', required=False, type=int, default=2, help='golden')
     return parser
 
 

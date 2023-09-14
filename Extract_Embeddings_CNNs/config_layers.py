@@ -20,7 +20,7 @@ def get_argparser():
 def main(args):
     APPS_DICTIONAY = {}
     current_path = os.getcwd()
-
+    
     layer_type = "conv2d"
     model_name = "LeNet"
     for i in range(2):
@@ -51,7 +51,7 @@ def main(args):
         shape_str=""
         for idx in shape:
             shape_str+=f"{idx} "
-        cmd = f"PRELOAD_FLAG= APP_DIR=. BIN_DIR=. APP_BIN=Run_Layer.py ./run.sh -t {layer_type} -n {model_name} -ln {i} -bs 1 -trt -sz {shape_str}"
+        cmd = f"PRELOAD_FLAG= GOLDEN_FLAG=1 APP_DIR=. BIN_DIR=. APP_BIN=Run_Layer.py ./run.sh -t {layer_type} -n {model_name} -ln {i} -bs 1 -trt -sz {shape_str}"
         print(cmd)
         os.system(cmd)
         APPS_DICTIONAY[f"{layer_type}-{model_name}-ln{i}"] =[
@@ -61,7 +61,7 @@ def main(args):
             10,
             f"-t {layer_type} -n {model_name} -ln {i} -bs 1 -trt -sz {shape_str}"
         ]
-
+    
     layer_type = "conv2d"
     model_name = "AlexNet"
     for i in range(5):
@@ -92,7 +92,7 @@ def main(args):
         shape_str=""
         for idx in shape:
             shape_str+=f"{idx} "
-        cmd = f"PRELOAD_FLAG= APP_DIR=. BIN_DIR=. APP_BIN=Run_Layer.py ./run.sh -t {layer_type} -n {model_name} -ln {i} -bs 1 -trt -sz {shape_str}"
+        cmd = f"PRELOAD_FLAG= GOLDEN_FLAG=1 APP_DIR=. BIN_DIR=. APP_BIN=Run_Layer.py ./run.sh -t {layer_type} -n {model_name} -ln {i} -bs 1 -trt -sz {shape_str}"
         print(cmd)
         os.system(cmd)
         APPS_DICTIONAY[f"{layer_type}-{model_name}-ln{i}"] =[
@@ -135,7 +135,7 @@ def main(args):
         shape_str=""
         for idx in shape:
             shape_str+=f"{idx} "
-        cmd = f"PRELOAD_FLAG= APP_DIR=. BIN_DIR=. APP_BIN=Run_Layer.py ./run.sh -t {layer_type} -n {model_name} -ln {i} -bs 1 -trt -sz {shape_str}"
+        cmd = f"PRELOAD_FLAG= GOLDEN_FLAG=1 APP_DIR=. BIN_DIR=. APP_BIN=Run_Layer.py ./run.sh -t {layer_type} -n {model_name} -ln {i} -bs 1 -trt -sz {shape_str}"
         print(cmd)
         os.system(cmd)
         APPS_DICTIONAY[f"{layer_type}-{model_name}-ln{i}"] =[
@@ -176,7 +176,7 @@ def main(args):
         shape_str=""
         for idx in shape:
             shape_str+=f"{idx} "
-        cmd = f"PRELOAD_FLAG= APP_DIR=. BIN_DIR=. APP_BIN=Run_Layer.py ./run.sh -t {layer_type} -n {model_name} -ln {i} -bs 1 -trt -sz {shape_str}"
+        cmd = f"PRELOAD_FLAG= GOLDEN_FLAG=1 APP_DIR=. BIN_DIR=. APP_BIN=Run_Layer.py ./run.sh -t {layer_type} -n {model_name} -ln {i} -bs 1 -trt -sz {shape_str}"
         print(cmd)
         os.system(cmd)
         APPS_DICTIONAY[f"{layer_type}-{model_name}-ln{i}"] =[
