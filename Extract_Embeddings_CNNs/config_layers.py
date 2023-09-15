@@ -1,7 +1,6 @@
 import os
 import h5py
 import numpy as np
-import nvbitfi_DNN_TRT as nvbitfi_DNN
 import argparse
 import json
 
@@ -21,10 +20,14 @@ def main(args):
     APPS_DICTIONAY = {}
     current_path = os.getcwd()
     
+    num_workers = 4
+    num_images = 4
+
+
     layer_type = "conv2d"
     model_name = "LeNet"
     for i in range(2):
-        os.system(f"python3 {model_name}.py --golden 1 -ln {i} -bs 1")
+        os.system(f"python3 {model_name}.py --golden 1 -ln {i} -bs 1 -w {num_workers} -ims {num_images}")
         os.system(f"python3 Run_Layer.py -t {layer_type} -n {model_name} -ln {i} -bs 1 -onnx")
 
         path = f"{layer_type}/{model_name}-ln{i}"
@@ -65,7 +68,7 @@ def main(args):
     layer_type = "conv2d"
     model_name = "AlexNet"
     for i in range(5):
-        os.system(f"python3 {model_name}.py --golden 1 -ln {i} -bs 1")
+        os.system(f"python3 {model_name}.py --golden 1 -ln {i} -bs 1 -w {num_workers} -ims {num_images}")
         os.system(f"python3 Run_Layer.py -t {layer_type} -n {model_name} -ln {i} -bs 1 -onnx")
 
         path = f"{layer_type}/{model_name}-ln{i}"
@@ -108,7 +111,7 @@ def main(args):
     layer_type = "conv2d"
     model_name = "MobileNetv3"
     for i in range(7):
-        os.system(f"python3 {model_name}.py --golden 1 -ln {i} -bs 1")
+        os.system(f"python3 {model_name}.py --golden 1 -ln {i} -bs 1 -w {num_workers} -ims {num_images}")
         os.system(f"python3 Run_Layer.py -t {layer_type} -n {model_name} -ln {i} -bs 1 -onnx")
 
         path = f"{layer_type}/{model_name}-ln{i}"
@@ -149,7 +152,7 @@ def main(args):
     layer_type = "conv2d"
     model_name = "ResNet50"
     for i in range(5):
-        os.system(f"python3 {model_name}.py --golden 1 -ln {i} -bs 1")
+        os.system(f"python3 {model_name}.py --golden 1 -ln {i} -bs 1 -w {num_workers} -ims {num_images}")
         os.system(f"python3 Run_Layer.py -t {layer_type} -n {model_name} -ln {i} -bs 1 -onnx")
 
         path = f"{layer_type}/{model_name}-ln{i}"

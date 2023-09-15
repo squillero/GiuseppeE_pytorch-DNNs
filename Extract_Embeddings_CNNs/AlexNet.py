@@ -12,7 +12,7 @@ import torchvision.transforms as transforms
 import time
 import os, sys
 import argparse
-import nvbitfi_DNN_TRT as nvbitDNN
+import nvbitfi_DNN as nvbitDNN
 
 
 
@@ -22,7 +22,8 @@ def get_argparser():
     parser.add_argument('-lt','--layer', required=False, help='golden')
     parser.add_argument('-ln','--layer_number', required=False, type=int, default=0, help='golden')
     parser.add_argument('-bs','--batch_size', required=False, type=int, default=1, help='golden')
-    parser.add_argument('-w','--workers', required=False, type=int, default=2, help='golden')
+    parser.add_argument('-w','--workers', required=False, type=int, default=4, help='golden')
+    parser.add_argument('-ims','--num_images', required=False, type=int, default=4, help='golden')
     return parser
 
 
@@ -120,7 +121,7 @@ def main(args):
                 tot_imgs+=batch_size
                 gacc1 += Res[:1].flatten().sum(dtype=torch.float32)
                 gacc5 += Res[:5].flatten().sum(dtype=torch.float32)
-                if batch*batch_size+batch_size>=32:
+                if batch*batch_size+batch_size>=args.num_images:
                     break
             elapsed = time.time() - t
             print(

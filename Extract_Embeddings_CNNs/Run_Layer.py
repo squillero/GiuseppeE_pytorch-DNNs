@@ -1,5 +1,4 @@
 import os
-import nvbitfi_DNN_TRT as nvbitfi_DNN
 import argparse
 
 
@@ -21,9 +20,11 @@ def main(args):
         shape = tuple(args.shape)
 
     if args.run_trt:
+        import nvbitfi_DNN_TRT as nvbitfi_DNN
         Layer = nvbitfi_DNN.TRT_load_embeddings(path_dir=f"{args.type}/{args.model_name}-ln{args.layer_number}",layer_number=Layer_number,batch_size=batch_size, layer_output_shape=shape)
         Layer.TRT_layer_inference()
     else:
+        import nvbitfi_DNN as nvbitfi_DNN
         Layer = nvbitfi_DNN.load_embeddings(path_dir=f"{args.type}/{args.model_name}-ln{args.layer_number}", layer_number=Layer_number,batch_size=batch_size)
         Layer.layer_inference()
         if args.onnx:
