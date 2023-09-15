@@ -3,6 +3,7 @@ from torch import Tensor
 import torch.nn as nn
 import torch.nn.common_types as ct
 import torchvision
+from torchvision import models
 import numpy as np
 import copy
 import torch
@@ -18,7 +19,8 @@ import h5py
 
 def get_argparser():
     parser = argparse.ArgumentParser(description='DNN models')
-    parser.add_argument('--golden', required=False, help='golden')
+    parser.add_argument('-g','--golden', required=False, help='golden')
+    parser.add_argument('-lt','--layer', required=False, help='golden')
     parser.add_argument('-ln','--layer_number', required=False, type=int, default=0, help='golden')
     parser.add_argument('-bs','--batch_size', required=False, type=int, default=1, help='golden')
     parser.add_argument('-w','--workers', required=False, type=int, default=4, help='golden')
@@ -26,46 +28,20 @@ def get_argparser():
     return parser
 
 
-# Defining the convolutional neural network
-class LeNet5(nn.Module):
-    def __init__(self, num_classes):
-        super(LeNet5, self).__init__()
-        self.layer1 = nn.Sequential(
-            nn.Conv2d(1, 6, kernel_size=5, stride=1, padding=0),
-            nn.BatchNorm2d(6),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-        )
-        self.layer2 = nn.Sequential(
-            nn.Conv2d(6, 16, kernel_size=5, stride=1, padding=0),
-            nn.BatchNorm2d(16),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-        )
-        self.fc = nn.Linear(400, 120)
-        self.relu = nn.ReLU()
-        self.fc1 = nn.Linear(120, 84)
-        self.relu1 = nn.ReLU()
-        self.fc2 = nn.Linear(84, num_classes)
-        self.softmax = nn.Softmax(dim=1)
-
-    def forward(self, x):
-        out = self.layer1(x)
-        out = self.layer2(out)
-        out = out.reshape(out.size(0), -1)
-        out = self.fc(out)
-        out = self.relu(out)
-        out = self.fc1(out)
-        out = self.relu1(out)
-        out = self.fc2(out)
-        out = self.softmax(out)
-        return out
-
-
 def main(args):
 
     path = os.path.dirname(__file__)
     # os.environ["CUDA_VISIBLE_DEVICES"]=""
+
+    transform = transforms.Compose([            #[1]
+        transforms.Resize(256),                    #[2]
+        transforms.CenterCrop(224),                #[3]
+        transforms.ToTensor(),                     #[4]
+        transforms.Normalize(                      #[5]
+        mean=[0.485, 0.456, 0.406],                #[6]
+        std=[0.229, 0.224, 0.225]                  #[7]
+        )])
+
 
     # Define relevant variables for the ML task
     batch_size = args.batch_size #512 
@@ -90,40 +66,23 @@ def main(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # device = "cpu"
     # device = 'cpu'
-
     # Loading the dataset and preprocessing
-    train_dataset = torchvision.datasets.MNIST(
-        root=os.path.join(path, "data"),
-        train=True,
-        transform=transforms.Compose(
-            [
-                transforms.Resize((32, 32)),
-                transforms.ToTensor(),
-                transforms.Normalize(mean=(0.1307,), std=(0.3081,)),
-            ]
-        ),
-        download=True,
+    train_dataset = torchvision.datasets.ImageFolder(
+        root="~/dataset/ilsvrc2012/val",
+        transform=transform
     )
 
-    test_dataset = torchvision.datasets.MNIST(
-        root=os.path.join(path, "data"),
-        train=False,
-        transform=transforms.Compose(
-            [
-                transforms.Resize((32, 32)),
-                transforms.ToTensor(),
-                transforms.Normalize(mean=(0.1325,), std=(0.3105,)),
-            ]
-        ),
-        download=True,
+    test_dataset = train_dataset = torchvision.datasets.ImageFolder(
+        root="~/dataset/ilsvrc2012/val",
+        transform=transform
     )
 
     train_loader = torch.utils.data.DataLoader(
-        dataset=train_dataset, batch_size=batch_size, shuffle=True
+        dataset=train_dataset, batch_size=batch_size, shuffle=True, num_workers=args.workers
     )
 
     test_loader = torch.utils.data.DataLoader(
-        dataset=test_dataset, batch_size=batch_size, shuffle=False
+        dataset=test_dataset, batch_size=batch_size, shuffle=False, num_workers=args.workers
     )
     print(args.golden)
 
@@ -133,56 +92,50 @@ def main(args):
 
         # print(torch.backends.cuda.matmul.allow_tf32)
         # print(torch.backends.cudnn.allow_tf32)
-        
-        model = torch.load(
-            os.path.join(path, "./checkpoint/LeNet"), map_location=torch.device("cpu")
-        )
+        model = models.mobilenet_v3_large(pretrained=True)
+
         model = model.to(device)
         model.eval()
         
         print(model)
 
         # Embeddings = nvbitDNN.extract_embeddings_nvbit(
-        #     model=model, lyr_type=[nn.Conv2d], lyr_num=args.layer_number, batch_size=batch_size, path_dir=f"conv2d/LeNet-ln{args.layer_number}"
+        #     model=model, lyr_type=[nn.Conv2d], lyr_num=args.layer_number, batch_size=batch_size, path_dir=f"conv2d/AlexNet-ln{args.layer_number}"
         # )
 
-        Inputs =[]
-        dummy_input = None
-        Output = []
         t = time.time()
+        tot_imgs=0
+        gacc1=0
+        gacc5=0
+        Inputs =[]
+        Output = []
+        dummy_input = None
         with torch.no_grad():
-            correct = 0
-            total = 0
             for batch, (images, labels) in enumerate(test_loader):
-                images = images.to(device)                
-                labels = labels.to(device)
+                images = images.to(device, non_blocking=True)
+                labels = labels.to(device, non_blocking=True)
                 if batch == 0: dummy_input = images
                 Inputs.append(images.detach().cpu())
                 # if(labels[0].item()==0):
                 outputs = model(images)
                 Output.append(outputs.detach().cpu())
                 # sorted, indices=torch.sort(outputs.data)
-                sorted, indices = outputs.data.sort(descending=True)
-
-                for i in range(0, labels.size(0)):
-                    print(f"\n\nImage {LeNet_dict[labels[i].item()]}.png")
-                    for j in range(0, 5):
-                        print(f"{LeNet_dict[indices[i][j].item()]}:{sorted[i][j]}")
-                    # _, predicted = torch.max(outputs.data, 1)
-                    correct += (indices[i][0] == labels[i].item()).sum().item()
-                total += labels.size(0)
-                # break
+                pred, clas=outputs.cpu().topk(5,1,True,True)
+                clas = clas.t()
+                Res = clas.eq(labels[None].cpu())
+                acc1 = Res[:1].sum(dim=0,dtype=torch.float32)
+                acc5 = Res[:5].sum(dim=0,dtype=torch.float32)
+                tot_imgs+=batch_size
+                gacc1 += Res[:1].flatten().sum(dtype=torch.float32)
+                gacc5 += Res[:5].flatten().sum(dtype=torch.float32)
                 if batch*batch_size+batch_size>=args.num_images:
                     break
             elapsed = time.time() - t
             print(
-                "Accuracy of the network on the {} test images: {} % in {} sec".format(
-                    total, 100 * correct / total, elapsed
+                "Accuracy of the network on the {} test images: acc1 {} % acc5 {} % in {} sec".format(
+                    tot_imgs, 100 * gacc1 / tot_imgs,  100 * gacc5 / tot_imgs, elapsed
                 )
             )
-
-        # Embeddings.extract_embeddings_target_layer()
-
 
         currentPath = os.path.dirname(__file__)
         currentFileName = os.path.basename(__file__).split('.')[0]
@@ -215,11 +168,9 @@ def main(args):
             )
 
 
-
         onnx_model_name = os.path.join(directory,f"{currentFileName}_pytorch.onnx")
 
         torch.onnx.export(model, dummy_input, onnx_model_name, verbose=False)
-
 
 
 if __name__ == "__main__":

@@ -1,0 +1,30 @@
+{
+    "DNNs-LeNet": [
+        "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/TensorRT_CNNs",
+        "DNN_TRT.py",
+        "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/TensorRT_CNNs",
+        60,
+        "-t DNNs -n LeNet -bs 1 -trt -sz 1 10 "
+    ],
+    "DNNs-AlexNet": [
+        "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/TensorRT_CNNs",
+        "DNN_TRT.py",
+        "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/TensorRT_CNNs",
+        60,
+        "-t DNNs -n AlexNet -bs 1 -trt -sz 1 1000 "
+    ],
+    "DNNs-MobileNetv3": [
+        "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/TensorRT_CNNs",
+        "DNN_TRT.py",
+        "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/TensorRT_CNNs",
+        60,
+        "-t DNNs -n MobileNetv3 -bs 1 -trt -sz 1 1000 "
+    ],
+    "DNNs-ResNet50": [
+        "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/TensorRT_CNNs",
+        "DNN_TRT.py",
+        "/home/juancho/Documents/GitHub/Ampere_NVBit/nvbit_release/tools/nvbitPERfi/test-apps/pytorch-DNNs/TensorRT_CNNs",
+        60,
+        "-t DNNs -n ResNet50 -bs 1 -trt -sz 1 1000 "
+    ]
+}
