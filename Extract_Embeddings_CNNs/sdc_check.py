@@ -94,7 +94,7 @@ def main(args):
 
             cmp_result = np.not_equal(tensor_golden,tensor_faulty)
 
-            sdc_index=np.argwhere(cmp_result)
+            sdc_index=np.argwhere(cmp_result | np.isnan(tensor_faulty) | | np.isinf(tensor_faulty))
             if len(sdc_index)>0:
                 print(Output_dataset[0].shape)
                 
