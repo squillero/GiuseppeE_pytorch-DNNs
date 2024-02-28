@@ -1,7 +1,12 @@
 # PyTorch-DNNs
 
-This repository contains the workflow to implement several DNNs using TensorRT for reliability evaluations of permanent faults on GPU devices. This repository works along the reliability evaluation framework [**nvbitPERfi**](https://github.com/divadnauj-GB/nvbitPERfi/tree/Dev). The repository contains several folders; the main one is [**TensorRT_CNNs**](https://github.com/divadnauj-GB/pytorch-DNNs/tree/main/TensorRT_CNNs). 
-The main script is [config_layers.py](https://github.com/divadnauj-GB/pytorch-DNNs/blob/main/TensorRT_CNNs/config_layers.py). 
+This repository contains the workflow to implement several DNNs using TensorRT for reliability evaluations of permanent faults on GPU devices. This repository works along the reliability evaluation framework [**nvbitPERfi**](https://github.com/divadnauj-GB/nvbitPERfi/tree/Dev). The repository contains several folders:
+
+* The [**TensorRT_CNNs**](https://github.com/divadnauj-GB/pytorch-DNNs/tree/main/TensorRT_CNNs) folder contains the implementation of full DNN workloads
+
+* The [**Extract_Embeddings_CNNs**](https://github.com/divadnauj-GB/pytorch-DNNs/tree/main/Extract_Embeddings_CNNs) folder contains the implementation of individual layers for several DNNs
+
+The main script in any of the configurations is [config_layers.py](https://github.com/divadnauj-GB/pytorch-DNNs/blob/main/TensorRT_CNNs/config_layers.py). 
 
 In order to use this framework, you have to follow these steps:
 1. Download the ImageNet dataset in your home directory as ```~/dataset/ilsvrc2012```
