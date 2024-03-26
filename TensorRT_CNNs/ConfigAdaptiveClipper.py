@@ -257,9 +257,9 @@ def main(args):
 
     for epoch in tqdm(range(100)):
             print(f'epoch: {epoch}')
-            train_loss_avg, train_prec1_avg, train_prec5_avg = train(model, criterion=criterion, optimizer = optimizer, dataloader=train_loader, epoch=epoch, writer=writer)
+            train_loss_avg, train_prec1_avg, train_prec5_avg, _ = train(model, criterion=criterion, optimizer = optimizer, dataloader=train_loader, epoch=epoch, writer=writer)
 
-            val_loss_avg, val_prec1_avg, val_prec5_avg = validate(model, val_loader=val_loader, criterion=criterion)
+            val_loss_avg, val_prec1_avg, val_prec5_avg, _ = validate(model, val_loader=val_loader, criterion=criterion, softmax=None)
             print(f'val_loss_avg: {val_loss_avg}, val_prec1_avg: {val_prec1_avg}, val_prec5_avg: {val_prec5_avg}')
             scheduler.step()
 
