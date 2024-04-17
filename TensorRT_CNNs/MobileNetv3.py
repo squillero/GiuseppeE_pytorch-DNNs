@@ -20,6 +20,7 @@ import h5py
 def get_argparser():
     parser = argparse.ArgumentParser(description='DNN models')
     parser.add_argument('-g','--golden', required=False, help='golden')
+    parser.add_argument('-t','--type', required=True, type=str, help='golden')
     parser.add_argument('-lt','--layer', required=False, help='golden')
     parser.add_argument('-ln','--layer_number', required=False, type=int, default=0, help='golden')
     parser.add_argument('-bs','--batch_size', required=False, type=int, default=1, help='golden')
@@ -108,6 +109,7 @@ def main(args):
         gacc1=0
         gacc5=0
         Inputs =[]
+        Labels = []
         Output = []
         dummy_input = None
         with torch.no_grad():
@@ -116,6 +118,7 @@ def main(args):
                 labels = labels.to(device, non_blocking=True)
                 if batch == 0: dummy_input = images
                 Inputs.append(images.detach().cpu())
+                Labels.append(labels.detach().cpu())
                 # if(labels[0].item()==0):
                 outputs = model(images)
                 Output.append(outputs.detach().cpu())
@@ -139,7 +142,7 @@ def main(args):
 
         currentPath = os.path.dirname(__file__)
         currentFileName = os.path.basename(__file__).split('.')[0]
-        directory = os.path.join(currentPath,"DNNs",currentFileName)
+        directory = os.path.join(currentPath,args.type,currentFileName)
 
         os.system(f"mkdir -p {directory}")
 
@@ -147,6 +150,10 @@ def main(args):
                 torch.cat(Inputs).cpu().numpy()
             )
         
+        embeddings_label = (
+                torch.cat(Labels).cpu().numpy()
+            )
+               
         log_path_file = os.path.join(
                 directory, f"Inputs_DNN.h5"
             )
@@ -154,6 +161,9 @@ def main(args):
         with h5py.File(log_path_file, "w") as hf:
             hf.create_dataset(
                 "inputs", data=embeddings_input, compression="gzip"
+            )
+            hf.create_dataset(
+                "labels", data=embeddings_label, compression="gzip"
             )
 
         embeddings_output = (torch.cat(Output).cpu().numpy())
@@ -176,4 +186,3 @@ def main(args):
 if __name__ == "__main__":
     argparser = get_argparser()
     main(argparser.parse_args())
-

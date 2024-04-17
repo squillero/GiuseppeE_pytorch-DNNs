@@ -70,19 +70,19 @@ def main(args):
     #print(args.golden)
 
     TRT_model_name = "MnasNetRanger_pytorch.rtr"
-    Num_outouts = 1000
+    Num_outouts = 10
     
     with open(os.path.join(path, "DNNs", currentFileName, TRT_model_name), "rb") as f:
         runtime = trt.Runtime(trt.Logger(trt.Logger.WARNING)) 
         engine = runtime.deserialize_cuda_engine(f.read())
         context = engine.create_execution_context()
-
+        
         output = np.empty([BATCH_SIZE, Num_outouts], dtype = target_dtype) 
         # allocate device memory
         for batch, (images, labels) in enumerate(test_loader):
             sample_images = np.array(images, dtype=np.float32)
             break
-
+        
         d_input = cuda.mem_alloc(1 * sample_images.nbytes)
         d_output = cuda.mem_alloc(1 * output.nbytes)
         bindings = [int(d_input), int(d_output)]
@@ -95,6 +95,7 @@ def main(args):
         dummy_input=None
         for batch, (images, labels) in enumerate(test_loader):
             images = np.array(images, dtype=np.float32)
+            print(images.shape)
 
             cuda.memcpy_htod_async(d_input, images, stream)
             # execute model
@@ -108,7 +109,6 @@ def main(args):
             clas = clas.t()
             pred = pred.t()
             size = pred.shape
-            
             # for idx,label in enumerate(labels):
             #     for pred_top in range(size[0]):
             #         print(f"{batch*BATCH_SIZE+idx}; {pred_top}; {label}; {clas[pred_top][idx]}; {pred[pred_top][idx]}")

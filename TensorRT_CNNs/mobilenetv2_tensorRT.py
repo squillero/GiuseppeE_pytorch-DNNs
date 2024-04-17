@@ -12,59 +12,60 @@ import os, time
 def get_argparser():
     parser = argparse.ArgumentParser(description='DNN models')
     parser.add_argument('--golden', required=False, help='golden')
+    parser.add_argument('-t','--type', required=True, type=str, help='golden')
     parser.add_argument('-ln','--layer_number', required=False, type=int, default=0, help='golden')
     parser.add_argument('-bs','--batch_size', required=False, type=int, default=1, help='golden')
+    parser.add_argument('-w','--workers', required=False, type=int, default=4, help='golden')
+    parser.add_argument('-ims','--num_images', required=False, type=int, default=4, help='golden')
+    parser.add_argument('-fmt','--format', required=False, type=int, default=32, help='golden')
     return parser
 
 
 def main(args):
 
     BATCH_SIZE = args.batch_size
+    if args.format==16:
+        target_dtype = np.float16
+    else:
+        target_dtype = np.float32
+       
+    BATCH_SIZE = args.batch_size
     target_dtype = np.float32
     path = os.path.dirname(__file__)
+    currentFileName = os.path.basename(__file__).split('.')[0].split('_')[0]
 
-    transform = transforms.Compose([            #[1]
-        transforms.Resize(256),                    #[2]
-        transforms.CenterCrop(224),                #[3]
-        transforms.ToTensor(),                     #[4]
-        transforms.Normalize(                      #[5]
-        mean=[0.485, 0.456, 0.406],                #[6]
-        std=[0.229, 0.224, 0.225]                  #[7]
-        )])
+    train_transforms = transforms.Compose([
+            transforms.Resize((70, 70)),
+            transforms.RandomCrop((40, 40)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean= (0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)),
+            transforms.RandomRotation(degrees=(-20,20)),
+        ])
+
+    test_transform = transforms.Compose([
+            transforms.Resize((70, 70)),        
+            transforms.CenterCrop((64, 64)),            
+            transforms.ToTensor(),                
+            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
 
     # Define relevant variables for the ML task
     batch_size = args.batch_size #512 
-    num_classes = 10
-    learning_rate = 0.001
-    num_epochs = 10
 
-    LeNet_dict = {
-        0: "zero",
-        1: "one",
-        2: "two",
-        3: "three",
-        4: "four",
-        5: "five",
-        6: "six",
-        7: "seven",
-        8: "eight",
-        9: "nine",
-    }
 
     # Device will determine whether to run the training on GPU or CPU.
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # device = "cpu"
     # device = 'cpu'
     # Loading the dataset and preprocessing
-    train_dataset = torchvision.datasets.ImageFolder(
-        root="~/dataset/ilsvrc2012/train",
-        transform=transform
+    train_dataset = torchvision.datasets.CIFAR10(
+        root="~/dataset/cifar10",
+        transform=train_transforms
     )
 
-    test_dataset = train_dataset = torchvision.datasets.ImageFolder(
-        root="~/dataset/ilsvrc2012/val",
-        transform=transform
+    test_dataset = train_dataset = torchvision.datasets.CIFAR10(
+        root="~/dataset/cifar10",
+        transform=test_transform
     )
 
     train_loader = torch.utils.data.DataLoader(
@@ -76,10 +77,10 @@ def main(args):
     )
     #print(args.golden)
 
-    TRT_model_name = "AlexNet_pytorch.rtr"
-    Num_outouts = 10000
+    TRT_model_name = "mobilenetv2_pytorch.rtr"
+    Num_outouts = 1000
     
-    with open(os.path.join(path, TRT_model_name), "rb") as f:
+    with open(os.path.join(path, args.type, currentFileName, TRT_model_name), "rb") as f:
         runtime = trt.Runtime(trt.Logger(trt.Logger.WARNING)) 
         engine = runtime.deserialize_cuda_engine(f.read())
         context = engine.create_execution_context()
@@ -87,7 +88,7 @@ def main(args):
         output = np.empty([BATCH_SIZE, Num_outouts], dtype = target_dtype) 
         # allocate device memory
         for batch, (images, labels) in enumerate(test_loader):
-            sample_images = np.array(images, dtype=np.float32)
+            sample_images = np.array(images, dtype=target_dtype)
             break
 
         d_input = cuda.mem_alloc(1 * sample_images.nbytes)
@@ -101,7 +102,7 @@ def main(args):
         gacc5=0
         dummy_input=None
         for batch, (images, labels) in enumerate(test_loader):
-            images = np.array(images, dtype=np.float32)
+            images = np.array(images, dtype=target_dtype)
 
             cuda.memcpy_htod_async(d_input, images, stream)
             # execute model
@@ -110,15 +111,15 @@ def main(args):
             cuda.memcpy_dtoh_async(output, d_output, stream)
             # syncronize threads
             stream.synchronize()
-            outputs = torch.from_numpy(output)
+            outputs = torch.from_numpy(output.astype(np.float32))
             pred, clas=outputs.cpu().topk(5,1,True,True)
             clas = clas.t()
             pred = pred.t()
             size = pred.shape
             
-            for idx,label in enumerate(labels):
-                for pred_top in range(size[0]):
-                    print(f"{batch*BATCH_SIZE+idx}; {pred_top}; {label}; {clas[pred_top][idx]}; {pred[pred_top][idx]}")
+            # for idx,label in enumerate(labels):
+            #     for pred_top in range(size[0]):
+            #         print(f"{batch*BATCH_SIZE+idx}; {pred_top}; {label}; {clas[pred_top][idx]}; {pred[pred_top][idx]}")
             Res = clas.eq(labels[None].cpu())
 
             acc1 = Res[:1].sum(dim=0,dtype=torch.float32)
@@ -126,15 +127,15 @@ def main(args):
             gacc1 += Res[:1].flatten().sum(dtype=torch.float32)
             gacc5 += Res[:5].flatten().sum(dtype=torch.float32)
             tot_imgs+=BATCH_SIZE
-            if batch*BATCH_SIZE+BATCH_SIZE>=100:
+            if batch*BATCH_SIZE+BATCH_SIZE>=args.num_images:
                 break
         
         elapsed = time.time() - t
-        # print(
-        #     "Accuracy of the network on the {} test images: acc1 {} % acc5 {} % in {} sec".format(
-        #         tot_imgs, 100 * gacc1 / tot_imgs,  100 * gacc5 / tot_imgs, elapsed
-        #     )
-        # )
+        print(
+            "Accuracy of the network on the {} test images: acc1 {} % acc5 {} % in {} sec".format(
+                tot_imgs, 100 * gacc1 / tot_imgs,  100 * gacc5 / tot_imgs, elapsed
+            )
+        )
 
 
 if __name__ == "__main__":

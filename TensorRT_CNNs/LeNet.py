@@ -1,9 +1,9 @@
+import numpy as np
 import torch
 from torch import Tensor
 import torch.nn as nn
 import torch.nn.common_types as ct
 import torchvision
-import numpy as np
 import copy
 import torch
 import torch.nn as nn

@@ -1,4 +1,4 @@
-
+import numpy as np
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -6,7 +6,6 @@ import tensorrt as trt
 import pycuda.driver as cuda
 import pycuda.autoinit
 import argparse 
-import numpy as np
 import os, time
 
 def get_argparser():

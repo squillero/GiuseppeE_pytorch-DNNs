@@ -18,7 +18,9 @@ import h5py
 
 def get_argparser():
     parser = argparse.ArgumentParser(description='DNN models')
-    parser.add_argument('--golden', required=False, help='golden')
+    parser.add_argument('-g','--golden', required=False, help='golden')
+    parser.add_argument('-t','--type', required=True, type=str, help='golden')
+    parser.add_argument('-lt','--layer', required=False, help='golden')
     parser.add_argument('-ln','--layer_number', required=False, type=int, default=0, help='golden')
     parser.add_argument('-bs','--batch_size', required=False, type=int, default=1, help='golden')
     parser.add_argument('-w','--workers', required=False, type=int, default=4, help='golden')
@@ -32,6 +34,7 @@ def get_argparser():
 def main(args):
 
     path = os.path.dirname(__file__)
+    print(path)
     # os.environ["CUDA_VISIBLE_DEVICES"]=""
 
     # Define relevant variables for the ML task
