@@ -1,5 +1,7 @@
 # PyTorch-DNNs
 
+[IGNORE ME]
+
 This repository contains the workflow to implement several DNNs using TensorRT for reliability evaluations of permanent faults on GPU devices. This repository works along the reliability evaluation framework [**nvbitPERfi**](https://github.com/divadnauj-GB/nvbitPERfi/tree/Dev). The repository contains several folders:
 
 * The [**TensorRT_CNNs**](https://github.com/divadnauj-GB/pytorch-DNNs/tree/main/TensorRT_CNNs) folder contains the implementation of full DNN workloads
